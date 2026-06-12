@@ -86,7 +86,6 @@ def home():
 def style():
     return send_file("templates/style.css")
 
-
 @app.route("/script.js")
 def script():
     return send_file("templates/script.js")
