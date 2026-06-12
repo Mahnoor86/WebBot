@@ -1,90 +1,113 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Market Analysis Bot</title>
-
     <link rel="stylesheet" href="/style.css">
 </head>
-
 <body>
-
 <div class="container">
-
-    <div class="header">
-        <h2 id="pair">EUR/USD (OTC)</h2>
-        <p>Timeframe: <span id="timeframe">10 SEC</span></p>
-    </div>
-
-    <div class="signal-circle">
-        <div class="signal-content">
-
-            <div class="arrow" id="arrow">⬆</div>
-
-            <div class="signal-label">
-                SIGNAL
-            </div>
-
-            <div class="signal-type" id="signal">
-                WAITING...
-            </div>
-
-        </div>
-    </div>
-
-    <div class="cards">
-
-        <div class="card">
-
-            <div class="card-title">
-                SIGNAL STRENGTH
-            </div>
-
-            <div id="dots" class="dots">
-                ○ ○ ○ ○ ○
-            </div>
-
-            <div id="strengthText">
-                0/5
-            </div>
-
-        </div>
-
-        <div class="card">
-
-            <div class="card-title">
-                WIN RATE
-            </div>
-
-            <div class="card-value" id="winrate">
-                0%
-            </div>
-
-        </div>
-
-    </div>
-
-    <div class="processing">
-        ● AI PROCESSING ACTIVE
-    </div>
-
-    <button class="generate-btn" onclick="loadData()">
-        Generate New Signal
-    </button>
-
-    <div class="bottom-nav">
-
-        <div class="nav-item">📈 TRADE</div>
-        <div class="nav-item">⚡ LIVE FEED</div>
-        <div class="nav-item">⚙ SETTINGS</div>
-
-    </div>
-
+<div class="header">
+    <h2 id="pair">Signal For: EUR/USD</h2>
+    <p>Timeframe: <span id="timeframe">10 SEC</span></p>
 </div>
+<div class="signal-circle">
+    <div class="signal-content">
+        <div class="arrow" id="arrow">⬆</div>
+        <div class="signal-label">
+            SIGNAL
+        </div>
+        <div class="signal-type" id="signal">
+            WAITING...
+        </div>
+    </div>
+</div>
+<div class="cards">
+    <div class="card">
+        <div class="card-title">SIGNAL STRENGTH</div>
+        <div id="dots" class="dots">○ ○ ○ ○ ○</div>
+        <div id="strengthText">0/5</div>
+    </div>
+    <div class="card">
+        <div class="card-title">WIN RATE</div>
+        <div class="card-value" id="winrate">0%</div>
+    </div>
+</div>
+<div class="processing">
+    ● AI PROCESSING ACTIVE
+</div>
+<div class="graph-box">
+    <canvas id="chart"></canvas>
+</div>
+<button class="generate-btn" onclick="loadData()">
+    Generate New Signal
+</button>
 
+<!-- NAVIGATION -->
+<div class="bottom-nav">
+    <div class="nav-item" onclick="showTab('trade')">
+        📈 TRADE
+    </div>
+    <div class="nav-item" onclick="showTab('live')">
+        ⚡ LIVE FEED
+    </div>
+    <div class="nav-item" onclick="showTab('settings')">
+        ⚙ SETTINGS
+    </div>
+</div>
+<!-- CONTENT AREA -->
+<div class="content-area">
+    <!-- TRADE -->
+    <div id="tradeTab">
+        <h3>Trade Analysis</h3>
+        <p>
+            Asset:
+            <span id="tradePair">EUR/USD</span>
+        </p>
+        <p>
+            Timeframe:
+            <span id="tradeFrame">10 SEC</span>
+        </p>
+        <p>
+            Current Signal:
+            <span id="tradeSignal">WAITING...</span>
+        </p>
+    </div>
+    <!-- LIVE FEED -->
+    <div id="liveTab" style="display:none;">
+        <h3>Live Feed</h3>
+        <div id="liveData">
+            No data yet...
+        </div>
+    </div>
+    <!-- SETTINGS -->
+    <div id="settingsTab" style="display:none;">
+        <h3>Settings</h3>
+        <label>Type</label>
+        <br><br>
+        <select id="setPair">
+            <option value="EURUSD=X">EUR/USD</option>
+            <option value="BTC-USD">BTC/USD</option>
+            <option value="GC=F">GOLD</option>
+        </select>
+        <br><br>
+        <label>Timeframe</label>
+        <br><br>
+        <select id="setTime">
+            <option value="5">5 SEC</option>
+            <option value="10">10 SEC</option>
+            <option value="60">1 MIN</option>
+            <option value="300">5 MIN</option>
+            <option value="900">15 MIN</option>
+        </select>
+        <br><br>
+        <button onclick="applySettings()">
+            Apply Settings
+        </button>
+    </div>
+</div>
+</div>
 <script src="/script.js"></script>
-
 </body>
 </html>
