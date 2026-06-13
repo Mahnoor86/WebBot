@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebBot — Market Signal Analyzer</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+
+<div class="container">
+
+    <!-- HEADER -->
+    <div class="header">
+        <div class="header-top">
+            <div class="logo">WB</div>
+            <div class="header-info">
+                <h1 id="pair">EUR/USD</h1>
+                <p class="subtitle">Binary Options Signal Bot</p>
+            </div>
+            <div class="live-badge">● LIVE</div>
+        </div>
+        <div class="meta-row">
+            <span class="meta-tag">Timeframe: <strong id="timeframe">10 SEC</strong></span>
+            <span class="meta-tag">Price: <strong id="currentPrice">—</strong></span>
+            <span class="meta-tag">RSI: <strong id="rsiDisplay">—</strong></span>
+        </div>
+    </div>
+
+    <!-- SIGNAL CIRCLE -->
+    <div class="signal-wrap">
+        <div class="signal-circle" id="signalCircle">
+            <div class="signal-content">
+                <div class="arrow" id="arrow">?</div>
+                <div class="signal-label">SIGNAL</div>
+                <div class="signal-type" id="signal">WAITING...</div>
+            </div>
+        </div>
+        <div class="countdown-wrap" id="countdownWrap" style="display:none;">
+            <div class="countdown-label">Next signal in</div>
+            <div class="countdown-timer" id="countdown">—</div>
+        </div>
+    </div>
+
+    <!-- STAT CARDS -->
+    <div class="cards">
+        <div class="card">
+            <div class="card-title">WIN RATE</div>
+            <div class="card-value accent" id="winrate">—%</div>
+        </div>
+        <div class="card">
+            <div class="card-title">STRENGTH</div>
+            <div id="dots" class="dots">○ ○ ○ ○ ○</div>
+            <div id="strengthText" class="strength-text">0 / 5</div>
+        </div>
+        <div class="card">
+            <div class="card-title">CALL</div>
+            <div class="card-value up" id="upPct">—%</div>
+        </div>
+        <div class="card">
+            <div class="card-title">PUT</div>
+            <div class="card-value down" id="downPct">—%</div>
+        </div>
+    </div>
+
+    <!-- PROBABILITY BAR -->
+    <div class="prob-bar-wrap">
+        <span class="prob-label up-label">CALL</span>
+        <div class="prob-bar">
+            <div class="prob-fill" id="probFill" style="width:50%"></div>
+        </div>
+        <span class="prob-label down-label">PUT</span>
+    </div>
+
+    <!-- PRICE CHART -->
+    <div class="chart-box">
+        <div class="chart-header">
+            <span>Price Action (Last 60 Candles)</span>
+            <span id="chartSignalLabel" class="chart-badge">—</span>
+        </div>
+        <canvas id="chart"></canvas>
+    </div>
+
+    <!-- INDICATORS TABLE -->
+    <div class="indicators-box">
+        <div class="section-title">Indicator Breakdown</div>
+        <div id="indicatorList" class="indicator-list">
+            <div class="indicator-row placeholder">
+                <span>Generating signals...</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- GENERATE BUTTON -->
+    <button class="generate-btn" id="generateBtn" onclick="loadData()">
+        <span id="btnText">⚡ Generate Signal</span>
+    </button>
+
+    <!-- AUTO REFRESH TOGGLE -->
+    <div class="auto-row">
+        <label class="toggle-wrap">
+            <input type="checkbox" id="autoRefresh" onchange="toggleAuto()">
+            <span class="toggle-slider"></span>
+        </label>
+        <span class="auto-label">Auto-refresh every <strong id="tfLabel">10s</strong></span>
+    </div>
+
+    <!-- PROCESSING LINE -->
+    <div class="processing" id="processing" style="display:none;">
+        <span class="blink">●</span> AI PROCESSING...
+    </div>
+
+    <!-- NAVIGATION -->
+    <div class="bottom-nav">
+        <div class="nav-item active" id="navTrade" onclick="showTab('trade')">📈 TRADE</div>
+        <div class="nav-item" id="navLive" onclick="showTab('live')">⚡ FEED</div>
+        <div class="nav-item" id="navSettings" onclick="showTab('settings')">⚙ SETTINGS</div>
+    </div>
+
+    <!-- TAB CONTENT -->
+    <div class="content-area">
+
+        <!-- TRADE TAB -->
+        <div id="tradeTab">
+            <h3>Trade Summary</h3>
+            <table class="info-table">
+                <tr><td>Asset</td><td><strong id="tradePair">EUR/USD</strong></td></tr>
+                <tr><td>Timeframe</td><td><strong id="tradeFrame">10 SEC</strong></td></tr>
+                <tr><td>Signal</td><td><strong id="tradeSignal">—</strong></td></tr>
+                <tr><td>Win Rate</td><td><strong id="tradeWin">—</strong></td></tr>
+                <tr><td>Entry Price</td><td><strong id="tradePrice">—</strong></td></tr>
+                <tr><td>RSI</td><td><strong id="tradeRsi">—</strong></td></tr>
+                <tr><td>Last Updated</td><td><strong id="tradeTime">—</strong></td></tr>
+            </table>
+        </div>
+
+        <!-- LIVE FEED TAB -->
+        <div id="liveTab" style="display:none;">
+            <h3>Signal History</h3>
+            <div id="liveFeed" class="live-feed">
+                <p class="feed-empty">No signals yet. Hit Generate Signal.</p>
+            </div>
+        </div>
+
+        <!-- SETTINGS TAB -->
+        <div id="settingsTab" style="display:none;">
+            <h3>Settings</h3>
+            <div class="settings-form">
+                <label>Asset Pair</label>
+                <select id="setPair">
+                    <option value="EURUSD=X">EUR/USD</option>
+                    <option value="GBPUSD=X">GBP/USD</option>
+                    <option value="USDJPY=X">USD/JPY</option>
+                    <option value="BTC-USD">BTC/USD</option>
+                    <option value="ETH-USD">ETH/USD</option>
+                    <option value="GC=F">GOLD</option>
+                </select>
+
+                <label>Expiry Timeframe</label>
+                <select id="setTime">
+                    <option value="5">5 Seconds</option>
+                    <option value="10" selected>10 Seconds</option>
+                    <option value="30">30 Seconds</option>
+                    <option value="60">1 Minute</option>
+                    <option value="300">5 Minutes</option>
+                    <option value="900">15 Minutes</option>
+                </select>
+
+                <button class="apply-btn" onclick="applySettings()">Apply Settings</button>
+            </div>
+        </div>
+
+    </div>
+
+    <p class="disclaimer">⚠ For educational purposes only. Not financial advice.</p>
+
+</div>
+
+<script src="/script.js"></script>
+</body>
+</html>
